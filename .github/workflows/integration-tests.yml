@@ -94,6 +94,11 @@ jobs:
           - 6379:6379
         options: --entrypoint redis-server
 
+    env:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+
     name: "Run tests: PHP ${{ matrix.php }} - ${{ matrix.postgres }} - ${{ matrix.stability }} - ${{ matrix.os }}"
 
     steps:
