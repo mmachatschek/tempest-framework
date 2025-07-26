@@ -19,8 +19,13 @@ jobs:
         php:
           - 8.4
         os:
-          - ubuntu-latest
-          - windows-latest
+          - ubuntu-22.04
+          - ubuntu-24.04
+          # - ubuntu-latest
+          - windows-2019
+          - windows-2022
+          - windows-2025
+          # - windows-latest
 
     name: "Run tests: ${{ matrix.os }}"
 
@@ -53,22 +58,51 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
-          - windows-latest
+          - ubuntu-22.04
+          - ubuntu-24.04
+          # - ubuntu-latest
+          - windows-2019
+          - windows-2022
+          - windows-2025
+          # - windows-latest
         php:
           - 8.4
-        database:
-          - sqlite
-          - mysql
-          - postgres
+          # - 8.5
+        postgres:
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+#        database:
+#          - sqlite
+#          - mysql
+#          - postgres
         stability:
           - prefer-stable
           - prefer-lowest
-        exclude:
-          - os: windows-latest
-            database: postgres
 
-    name: "Run tests: PHP ${{ matrix.php }} - ${{ matrix.database }} - ${{ matrix.stability }} - ${{ matrix.os }}"
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_USER: $POSTGRES_USER
+          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+        ports:
+          - 5432:5432
+        options: --health-cmd=pg_isready --health-interval=10s --health-timeout=5s --health-retries=3
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    name: "Run tests: PHP ${{ matrix.php }} - ${{ matrix.postgres }} - ${{ matrix.stability }} - ${{ matrix.os }}"
 
     steps:
       - name: Checkout code
@@ -89,20 +123,12 @@ jobs:
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: "Setup Redis"
-        if: ${{ matrix.os != 'windows-latest' }}
-        uses: supercharge/redis-github-action@1.7.0
-
-      - name: "Setup MySQL"
-        if: ${{ matrix.database == 'mysql' }}
-        uses: ankane/setup-mysql@v1
-        with:
-          mysql-version: 8.0
-          database: "app"
-
-      - name: "Setup PostgreSQL"
-        if: ${{ matrix.database == 'postgres' }}
-        uses: ankane/setup-postgres@v1
+#      - name: "Setup MySQL"
+#        if: ${{ matrix.database == 'mysql' }}
+#        uses: ankane/setup-mysql@v1
+#        with:
+#          mysql-version: 8.0
+#          database: "app"
 
       - name: Set database config - ${{ matrix.database }}
         run: php -r "copy('tests/Fixtures/Config/database.${{ matrix.database }}.php', 'tests/Fixtures/Config/database.config.php');"
