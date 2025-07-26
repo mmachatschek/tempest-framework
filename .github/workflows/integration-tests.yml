@@ -77,6 +77,9 @@ jobs:
         stability:
           - prefer-stable
           - prefer-lowest
+    env:
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
 
     services:
       postgres:
