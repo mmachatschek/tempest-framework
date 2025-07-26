@@ -122,8 +122,8 @@ jobs:
 #          mysql-version: 8.0
 #          database: "app"
 
-      - name: Set database config - ${{ matrix.database }}
-        run: php -r "copy('tests/Fixtures/Config/database.${{ matrix.database }}.php', 'tests/Fixtures/Config/database.config.php');"
+      - name: Set database config
+        run: php -r "copy('tests/Fixtures/Config/database.postgres.php', 'tests/Fixtures/Config/database.config.php');"
 
       - name: Tempest about
         run: php ./tempest about -v
