@@ -69,7 +69,9 @@ jobs:
           - prefer-stable
           - prefer-lowest
         exclude:
-          - os: windows-latest
+          - os: windows-2022
+            database: postgres
+          - os: windows-2025
             database: postgres
 
     name: "Run tests: PHP ${{ matrix.php }} - ${{ matrix.database }} - ${{ matrix.stability }} - ${{ matrix.os }}"
