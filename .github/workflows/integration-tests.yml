@@ -96,7 +96,7 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: "Setup Redis"
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ (matrix.os != 'windows-2022') && (matrix.os != 'windows-2025') }}
         uses: supercharge/redis-github-action@1.7.0
 
       - name: "Setup MySQL"
