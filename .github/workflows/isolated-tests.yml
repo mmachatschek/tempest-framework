@@ -45,7 +45,7 @@ jobs:
         stability:
           - prefer-stable
           - prefer-lowest
-    name: "Run tests: ${{ matrix.package.name }} - PHP ${{ matrix.php }} - ${{ matrix.stability }}"
+    name: "Run tests: ${{ matrix.package.name }} - PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.stability }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
