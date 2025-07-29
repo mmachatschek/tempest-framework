@@ -19,8 +19,10 @@ jobs:
         php:
           - 8.4
         os:
-          - ubuntu-latest
-          - windows-latest
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - windows-2022
+          - windows-2025
 
     name: "Run tests: ${{ matrix.os }}"
 
@@ -53,8 +55,10 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
-          - windows-latest
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - windows-2022
+          - windows-2025
         php:
           - 8.4
         database:
@@ -65,7 +69,9 @@ jobs:
           - prefer-stable
           - prefer-lowest
         exclude:
-          - os: windows-latest
+          - os: windows-2022
+            database: postgres
+          - os: windows-2025
             database: postgres
 
     name: "Run tests: PHP ${{ matrix.php }} - ${{ matrix.database }} - ${{ matrix.stability }} - ${{ matrix.os }}"
@@ -90,7 +96,7 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: "Setup Redis"
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ (matrix.os != 'windows-2022') && (matrix.os != 'windows-2025') }}
         uses: supercharge/redis-github-action@1.7.0
 
       - name: "Setup MySQL"

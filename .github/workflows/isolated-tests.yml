@@ -37,14 +37,15 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-22.04
+          - ubuntu-24.04
         package: ${{ fromJson(needs.get_packages.outputs.matrix) }}
         php:
           - 8.4
         stability:
           - prefer-stable
           - prefer-lowest
-    name: "Run tests: ${{ matrix.package.name }} - PHP ${{ matrix.php }} - ${{ matrix.stability }}"
+    name: "Run tests: ${{ matrix.package.name }} - PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.stability }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
